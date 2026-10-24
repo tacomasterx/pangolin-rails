@@ -1,0 +1,25 @@
+services:
+  database:
+    image: postgres
+    ports:
+      - "5438:5432"
+    env_file:
+      - .env
+    volumes:
+      - pgdb:/var/lib/postgres/data/
+  webapp:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    env_file:
+      - .env
+    volumes:
+      - .:/rails
+      # - bundler_gems:/usr/local/bundle
+    ports:
+      - "3007:3000"
+    depends_on:
+      - database
+
+volumes:
+  pgdb:
+  # bundler_gems:
